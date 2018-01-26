@@ -1,36 +1,51 @@
-# Project Title
+# Static Resume Website + Twilio App
 
-One Paragraph of project description goes here
+Here are a few notes/steps on how to get your application (pun intended) noticed at Twilio. 
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+Every employee at Twilio has made a Twilio app. In this tutorial we'll get your application on a website hosted by Bitballoon, integrated with Rollbar, and add a Twilio SMS workflow for good measure. Little to no coding required. 
 
-### Prerequisites
+### Create Accounts
 
-What things you need to install the software and how to install them
+First, we'll need to sign up for a few free trials. Just go ahead and sign up for these, and confirm your identity through email. We'll start using 'em later. 
+
+
+* [Github](https://github.com/join) - For version control and duh. 
+* [Twilio](https://www.twilio.com/try-twilio) - Also duh.
+* [Zapier](https://zapier.com/sign-up/) - This'll make it much easier to get Rollbar to talk to Twilio. No code required.
+* [Rollbar](https://rollbar.com/signup/) - Honestly this should have been at the top. 
+* [Bitballoon](https://www.bitballoon.com/login) - This will host your resume online. Easy. Also if you did these in order you could have created your account using your Github credentials.  
+
+
+
+### Downloads
+
+Now we'll need to download and install a few things. 
+
+* [Atom.io](https://atom.io) - Awesome text editor. This one is pretty self exmaplanitory. 
+* [Github Desktop](https://desktop.github.com/) - We'll clone the template here and the UI makes life easier for a beginner.
+
+
+## Getting Started (for real this time)
+
+Now that we've got all of our accounts set up, let's clone the repo with our website template. 
+
 
 ```
-Give examples
+https://github.com/RyanFitzgerald/devportfolio
 ```
 
-### Installing
+Click on `Clone or Download` and then `Open in Desktop`. This should open Github desktop if everything worked correctly. In the window that pops up, click `open this repository`.
 
-A step by step series of examples that tell you have to get a development env running
+This should open the repo in your Finder. Open up Atom, go back to finder, select all the files and folders, then drag and drop into the empty Atom window. This should open all the trees on the left. We'll work on updating the information with your personal details later. 
 
-Say what the step will be
 
-```
-Give the example
-```
+## Installing Rollbar
 
-And repeat
+Go back to rollbar.com and select `Browser JS` from the options on the left. Copy the code snippet that appears on the right, and open Atom again. 
 
-```
-until finished
-```
-
-End with an example of getting some data out of the system or using it for a little demo
+Navigate to the `index.html` file. At the top of the file, find the `<header>` section. Paste the Rollbar code snippet directly under the `<header>`.Save the file and this should intitialize Rollbar on the page and error data should be sent to the project right away. To test that the integration worked. 
 
 ## Running the tests
 
