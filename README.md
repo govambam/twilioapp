@@ -26,7 +26,6 @@ First, we'll need to sign up for a few free trials. Just go ahead and sign up fo
 Now we'll need to download and install a few things. 
 
 * [Atom.io](https://atom.io) - Awesome text editor. This one is pretty self exmaplanitory. 
-* [Github Desktop](https://desktop.github.com/) - We'll clone the template here and the UI makes life easier for a beginner.
 
 
 ## Getting Started (for real this time)
@@ -38,9 +37,7 @@ Now that we've got all of our accounts set up, let's clone the repo with our web
 https://github.com/RyanFitzgerald/devportfolio
 ```
 
-Click on `Clone or Download` and then `Open in Desktop`. This should open Github desktop if everything worked correctly. In the window that pops up, click `open this repository`.
-
-This should open the repo in your Finder. Open up Atom, go back to finder, select all the files and folders, then drag and drop into the empty Atom window. This should open all the trees on the left. We'll work on updating the information with your personal details later. 
+Open the Command Pallete in Atom and search `Git Clone`. When prompted, paste the above URL and continue. This should open the repository files in Atom. 
 
 
 ## Installing Rollbar
