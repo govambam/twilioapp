@@ -6,6 +6,8 @@ Here are a few notes/steps on how to get your application (pun intended) noticed
 
 Every employee at Twilio has made a Twilio app. In this tutorial we'll get your application on a website hosted by Bitballoon, integrated with Rollbar, and add a Twilio SMS workflow for good measure. Little to no coding required. 
 
+In the end, we'll have created a digital resume website that alerts you via SMS from Twilio any time someone has a) viewed your website, and b) viewed your website for more than 10 seconds. We'll be using a Rollbar to Zapier to Twilio flow to accomplish this. 
+
 ### Create Accounts
 
 First, we'll need to sign up for a few free trials. Just go ahead and sign up for these, and confirm your identity through email. We'll start using 'em later. 
@@ -45,58 +47,86 @@ This should open the repo in your Finder. Open up Atom, go back to finder, selec
 
 Go back to rollbar.com and select `Browser JS` from the options on the left. Copy the code snippet that appears on the right, and open Atom again. 
 
-Navigate to the `index.html` file. At the top of the file, find the `<header>` section. Paste the Rollbar code snippet directly under the `<header>`.Save the file and this should intitialize Rollbar on the page and error data should be sent to the project right away. To test that the integration worked. 
+Navigate to the `index.html` file. At the top of the file, find the `<header>` section. Paste the Rollbar code snippet directly under the `<header>`.Save the file and this should intitialize Rollbar on the page and error data should be sent to the project right away. 
 
-## Running the tests
-
-Explain how to run the automated tests for this system
-
-### Break down into end to end tests
-
-Explain what these tests test and why
+To test that the integration worked, go back to the Finder and open `index.html` in Google Chrome. Open Chrome Dev Tools ( `ctrl` + `shift` + `I` on PC) and open the Console tab. Paste the following and hit enter:
 
 ```
-Give an example
+window.onerror("TestRollbarError: testing window.onerror", window.location.href)
 ```
 
-### And coding style tests
+Go back to your Rollbar project and refresh the page. If the integration worked, you should see your first error in your Rollbar dashboard.
 
-Explain what these tests test and why
+## Creating a Zap
+
+Go back to Zapier and search for Twilio Zaps. Use the `Send webhook notifications as an SMS message with Twilio` Zap. Verify that the How It Works secion reads as follows: 
 
 ```
-Give an example
+Zapier catches the webhook
+Zapier sends information from the webhook via SMS through Twilio
 ```
 
-## Deployment
+If so, go ahead and create that Zap. Continue until you've reached the `Test Webhooks by Zapier` window and copy the webhook URL to your clipboard. Then in a new tab, naviate to your project settings in Rollbar to create a Webhook notification rule.
 
-Add additional notes about how to deploy this on a live system
+```
+https://rollbar.com/ACCOUNT_NAME/PROJECT_NAME/settings/notifications/
+```
 
-## Built With
+Paste the Zapier Webhook URL in Rollbar and save settings. Delete all the existing Rules to keep things, and then from the Template dropdown, select `Every Occurance -> Post to Webhook` and then click `Add`. Click `Send test occurance` in Rollbar and then head back to Zapier to continue. You should see `Test Successful` before you continue. 
 
-* [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
-* [Maven](https://maven.apache.org/) - Dependency Management
-* [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
 
-## Contributing
+Continue in Zapier and connect your Twilio account by inputing your Account SID and Auth Token. This can be found at:
 
-Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
+```
+https://www.twilio.com/console
+```
 
-## Versioning
+You should have created your first SMS telephone number during your Twilio account set up. If not, go back to your Twilio Dashboard and do so. Once ready, go back to Zapier and select your number in the `From Number` dropdown. If it does not appear, you can select `Use a Custom Value` and paste your phone number here. 
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
+The `To Number` should be your personal cell phone number with your country code. 
 
-## Authors
+And the Message should be whatever text you want to appear when someone views your resume website. We're going with `Hey-- you're doing great!`. 
 
-* **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
+Continue and then test. You should have just received a text from Twilio reading the custom message you created. If everything looks good, click Finish. 
 
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
 
-## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+## Configure Rollbar Messages
 
-## Acknowledgments
+Now that the basic integration is set up, let's make some more advanced rules in Rollbar so your Twilio SMS messages are more relevant and exciting. 
 
-* Hat tip to anyone who's code was used
-* Inspiration
-* etc
+In Atom, go to the Rollbar script in your header. Directly under it, paste the following script: 
+
+
+```
+<script> Rollbar.log("hey you're doing great");
+function startClock () {
+  Rollbar.log("niceeee they've been looking for 10 seconds!'");
+}
+setTimeout("startClock()", 10000);
+</script>
+```
+
+What we've done here is made it so each page load will throw an error with the message `he you're doing great`, and if someone has been on the page for 10 second, a second error will be thrown with the message `niceeee they've been looking for 10 seconds!`. These will appear as two different items in your Rollbar account. To test, save your index.html file and reload the page in Google Chrome. Stay on the page for 10 seconds and go back to check your Rollbar dashboard. You should see these two items in your account. 
+
+Now go ahead and set the severity of the `hey you're doing great` item to `debug` and the `niceeee they've been looking for 10 seconds!` item to `warning`. This will affect the SMS messages. 
+
+Now go back to your notifications at: `https://rollbar.com/ACCOUNT_NAME/PROJECT_NAME/settings/notifications/`
+
+Add a new filter to the rule you've created so that the `Level` must `==` `debug`. Now on every page load, you will receive the original message from the Zap you created. 
+
+## Create a 2nd Zap
+
+Now that we are getting an inspiring text after each page load, we'll hvae to create a second webhook so you can know when someone stays on the page for longer than 10 seconds. Go through the same process as earlier and create a Zap that does the following: 
+
+```
+Zapier catches the webhook
+Zapier sends information from the webhook via SMS through Twilio
+```
+
+This time, you'll take the newly generated webhook URL, and use that in a second webhook notification rule in Rollbar. Go through the process of greating the Zap, but copy that URL to your clipboard and save it for later. 
+
+The `From Number` and the `To Number` should be the same as earlier, but this time the message should be something about the viewer staying on your page for >10s. We're going with `Wow! These guys must be really interested in you!`. Save the Zap. 
+
+Now go back to your notification settings in Rollbar, and create a new `Every Occurance -> Post to Webhook` rule. This time, paste that second wehbook URL as in the rule so we aren't using the default webhook. Add a filter to the rule that the `Level` must `==` `warning`. Now whenever this rule is triggered, you'll get the SMS message from the second webhook. 
+
